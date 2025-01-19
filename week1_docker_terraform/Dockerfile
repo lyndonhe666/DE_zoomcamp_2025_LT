@@ -29,3 +29,5 @@ RUN pip install psycopg2-binary
 
 # Keep container running
 CMD ["bash"]
+
+
