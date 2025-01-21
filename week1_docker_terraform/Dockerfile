@@ -29,5 +29,22 @@ RUN pip install psycopg2-binary
 
 # Keep container running
 CMD ["bash"]
-
+# ENTRYPOINT vs CMD ["bash"] considerations:
+#
+# Use ENTRYPOINT when:
+# 1. Container serves a specific purpose (e.g., a data pipeline script)
+# 2. You want to enforce a specific executable that cannot be overridden
+# 3. Container acts like a standalone executable/command
+# Example: ENTRYPOINT ["python", "pipeline.py"]
+#
+# Use CMD ["bash"] when:
+# 1. Container is for development/debugging purposes
+# 2. You need flexibility to run different commands
+# 3. Interactive shell access is required
+# 4. Container serves multiple purposes
+#
+# Current setup uses CMD ["bash"] because:
+# - This appears to be a development environment
+# - We need flexibility to run different commands
+# - Interactive shell access is useful for debugging
 
