@@ -1,0 +1,10 @@
+docker run -it `
+    -e POSTGRES_USER="root" `
+    -e POSTGRES_PASSWORD="root" `
+    -e POSTGRES_DB="ny_taxi" `
+    -v D:\Projects\github_projects\DE_zoomcamp_2025_LT\week1_docker_terraform\ny_taxi_data:/var/lib/postgresql/data `
+    -p 5432:5432 `
+    --network=pg-network `
+    --name pg-database `
+    postgres:15.1-alpine
+## use backtick instead of \ as line continuation character
