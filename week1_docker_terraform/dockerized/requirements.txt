@@ -1,2 +1,3 @@
 sqlalchemy
-psycopg2
+pgcli
+psycopg2-binary \

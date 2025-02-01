@@ -1,4 +1,13 @@
-services:   
+services:
+  python:
+    build:
+      context: .
+      dockerfile: Dockerfile.python
+    depends_on:
+      - database
+    stdin_open: true
+    tty: true
+
   database:
     container_name: postgres
     image: postgres:15.1

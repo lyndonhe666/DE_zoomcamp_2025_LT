@@ -12,10 +12,8 @@ RUN apt-get update && apt-get install -y \
     # Set working directory
 WORKDIR /app
 
-RUN pip install \
-    pandas \
-    psycopg2-binary \
-    sqlalchemy \
-    pgcli
+COPY requirements.txt .
+
+RUN pip install -r requirements.txt
 
 CMD ["bash"]
