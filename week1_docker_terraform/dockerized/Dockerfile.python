@@ -1,0 +1,21 @@
+FROM python:3.11-slim
+
+ENV PYTHONUNBUFFERED=1
+
+# Install system dependencies and PostgreSQL client
+RUN apt-get update && apt-get install -y \
+    postgresql-client \
+    libpq-dev \
+    gcc \
+    && rm -rf /var/lib/apt/lists/*
+
+    # Set working directory
+WORKDIR /app
+
+RUN pip install \
+    pandas \
+    psycopg2-binary \
+    sqlalchemy \
+    pgcli
+
+CMD ["bash"]
