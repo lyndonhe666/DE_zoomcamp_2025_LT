@@ -18,8 +18,8 @@ services:
       - POSTGRES_DB=ny_taxi
     ports:
       - 5432:5432
-    volumes:
-      - ../play_around/ny_taxi_data:/var/lib/postgresql/data
+    # volumes:
+    #   - ../play_around/ny_taxi_data:/var/lib/postgresql/data
     
   pgadmin:
     image: dpage/pgadmin4:latest
