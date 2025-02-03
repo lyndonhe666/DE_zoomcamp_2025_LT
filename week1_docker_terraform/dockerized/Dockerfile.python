@@ -3,17 +3,24 @@ FROM python:3.11-slim
 ENV PYTHONUNBUFFERED=1
 
 # Install system dependencies and PostgreSQL client
+# Update package lists and install required packages:
+# - postgresql-client: Command line tools for PostgreSQL
+# - libpq-dev: PostgreSQL development files needed for building Python packages
+# - gcc: GNU C compiler required for building some Python packages
 RUN apt-get update && apt-get install -y \
     postgresql-client \
     libpq-dev \
     gcc \
+    wget \
     && rm -rf /var/lib/apt/lists/*
 
-    # Set working directory
+# Set working directory
 WORKDIR /app
 
 COPY requirements.txt .
 
+COPY ingest_data.py .
+
 RUN pip install -r requirements.txt
 
-CMD ["bash"]
+ENTRYPOINT ["python", "ingest_data.py"]

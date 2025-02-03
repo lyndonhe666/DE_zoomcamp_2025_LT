@@ -7,6 +7,7 @@ services:
       - database
     stdin_open: true
     tty: true
+    command: ["--url=https://github.com/DataTalksClub/nyc-tlc-data/releases/download/green/green_tripdata_2019-01.csv.gz", "--user_name=root", "--password=root", "--db=ny_taxi", "--host=postgres", "--port=5432"]
 
   database:
     container_name: postgres
