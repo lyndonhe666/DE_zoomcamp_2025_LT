@@ -5,3 +5,10 @@ ny_taxi_data
 .ipynb_checkpoints
 */.ipynb_checkpoints/*
 *.ipynb_checkpoints
+*credentials*
+
+# Terraform
+.terraform
+*.tfstate
+*.tfstate.*
+.terraform.lock.hcl
