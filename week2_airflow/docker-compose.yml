@@ -22,11 +22,9 @@ x-airflow-common:
     GCP_PROJECT_ID: 'lt-de-zoomcamp-2025'
     GCP_GCS_BUCKET: 'data_lake_bucket'
 
-    PG_HOST: "${PG_HOST}"
-    PG_USER: "${PG_USER}"
-    PG_PASSWORD: "${PG_PASSWORD}"
-    PG_PORT: "${PG_PORT}"
-    PG_DATABASE: "${PG_DATABASE}"
+    PG_USER: "${POSTGRES_USER}"
+    PG_PASSWORD: "${POSTGRES_PASSWORD}"
+    PG_DATABASE: "${POSTGRES_DATABASE}"
 
   volumes:
     - ./dags:/opt/airflow/dags
@@ -37,8 +35,8 @@ x-airflow-common:
   user: "${AIRFLOW_UID:-50000}:0"
   depends_on:
     &airflow-common-depends-on
-    redis:
-      condition: service_healthy
+    # redis:
+    #   condition: service_healthy
     postgres:
       condition: service_healthy
 
@@ -223,21 +221,21 @@ services:
       - -c
       - airflow
 
-  flower:
-    <<: *airflow-common
-    command: celery flower
-    ports:
-      - 5555:5555
-    healthcheck:
-      test: ["CMD", "curl", "--fail", "http://localhost:5555/"]
-      interval: 10s
-      timeout: 10s
-      retries: 5
-    restart: always
-    depends_on:
-      <<: *airflow-common-depends-on
-      airflow-init:
-        condition: service_completed_successfully
+  # flower:
+  #   <<: *airflow-common
+  #   command: celery flower
+  #   ports:
+  #     - 5555:5555
+  #   healthcheck:
+  #     test: ["CMD", "curl", "--fail", "http://localhost:5555/"]
+  #     interval: 10s
+  #     timeout: 10s
+  #     retries: 5
+  #   restart: always
+  #   depends_on:
+  #     <<: *airflow-common-depends-on
+  #     airflow-init:
+  #       condition: service_completed_successfully
 
 volumes:
   postgres-db-volume:
