@@ -9,9 +9,9 @@ from dateutil.relativedelta import relativedelta
 import pandas as pd
 
 # get the environment variables
-GCP_GCS_BUCKET = os.getenv("GCP_GCS_BUCKET")
 GCP_PROJECT_ID = os.getenv("GCP_PROJECT_ID")
-
+# GCP_GCS_BUCKET = os.getenv("GCP_GCS_BUCKET")
+GCP_GCS_BUCKET = "lt-de-zoomcamp-2025_data_lake_bucket"
 
 def generate_date_string(start_date, end_date):
     start_date = datetime.strptime(start_date, "%Y-%m-%d")
@@ -54,7 +54,7 @@ with DAG(
     
         upload_data = BashOperator(
             task_id=f"upload_data_{ds}",
-            bash_command=f"gcloud storage cp /tmp/yellow_tripdata_{ds}.csv gs://{GCP_GCS_BUCKET}/raw/yellow_tripdata_{ds}.csv"
+            bash_command=f"gsutil -o 'GSUtil:parallel_composite_upload_threshold=150M' cp /tmp/yellow_tripdata_{ds}.parquet gs://{GCP_GCS_BUCKET}/raw/yellow_tripdata_{ds}.parquet"
         )
 
         create_table = BigQueryCreateExternalTableOperator(
