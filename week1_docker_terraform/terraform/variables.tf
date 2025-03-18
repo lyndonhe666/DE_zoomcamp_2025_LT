@@ -1,6 +1,6 @@
 variable "credentials" {
   description = "Path to the service account credentials file"
-  default     = "./terraform_SA_credentials.json"
+  default     = "../../gcp_credentials/terraform_SA_credentials.json"
 }
 
 variable "project" {
