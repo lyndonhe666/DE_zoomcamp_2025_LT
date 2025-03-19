@@ -11,3 +11,7 @@ ny_taxi_data
 *.terraform.lock.hcl
 *.tfstate
 *.tfstate.*
+*logs*
+*_pycache_*
+*plugins*
+*ipynb*

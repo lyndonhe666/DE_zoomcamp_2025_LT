@@ -17,10 +17,10 @@ x-airflow-common:
     AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
     AIRFLOW__API__AUTH_BACKEND: 'airflow.api.auth.backend.basic_auth'
     _PIP_ADDITIONAL_REQUIREMENTS: ${_PIP_ADDITIONAL_REQUIREMENTS:-}
-    GOOGLE_APPLICATION_CREDENTIALS: ../gcp_credentials/gcs_SA_credentials.json
-    AIRFLOW_CONN_GOOGLE_CLOUD_DEFAULT: google-cloud-platform://?extra__google_cloud_platform__key_path=../gcp_credentials/gcs_SA_credentials.json
+    GOOGLE_APPLICATION_CREDENTIALS: /gcp_credentials/gcs_SA_credentials.json
+    AIRFLOW_CONN_GOOGLE_CLOUD_DEFAULT: google-cloud-platform://?extra__google_cloud_platform__key_path=/gcp_credentials/gcs_SA_credentials.json
     GCP_PROJECT_ID: 'lt-de-zoomcamp-2025'
-    GCP_GCS_BUCKET: 'data_lake_bucket'
+    GCP_GCS_BUCKET: 'lt-de-zoomcamp-2025-data_lake_bucket'
 
     PG_USER: "${POSTGRES_USER}"
     PG_PASSWORD: "${POSTGRES_PASSWORD}"
@@ -30,7 +30,7 @@ x-airflow-common:
     - ./dags:/opt/airflow/dags
     - ./logs:/opt/airflow/logs
     - ./plugins:/opt/airflow/plugins
-    - ../gcp_credentials/gcs_SA_credentials.json/:/.google/credentials:ro
+    - ../gcp_credentials/gcs_SA_credentials.json:/opt/airflow/gcp_credentials/gcs_SA_credentials.json:ro
 
   user: "${AIRFLOW_UID:-50000}:0"
   depends_on:
@@ -46,7 +46,7 @@ services:
     environment:
       POSTGRES_USER: airflow
       POSTGRES_PASSWORD: airflow
-      POSTGRES_DB: airflow
+      POSTGRES_DATABASE: airflow
     volumes:
       - postgres-db-volume:/var/lib/postgresql/data
     healthcheck:
