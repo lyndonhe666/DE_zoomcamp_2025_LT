@@ -13,6 +13,7 @@ GCP_PROJECT_ID = os.getenv("GCP_PROJECT_ID")
 # GCP_GCS_BUCKET = os.getenv("GCP_GCS_BUCKET")
 GCP_GCS_BUCKET = "lt-de-zoomcamp-2025_data_lake_bucket"
 
+
 def generate_date_string(start_date, end_date):
     start_date = datetime.strptime(start_date, "%Y-%m-%d")
     end_date = datetime.strptime(end_date, "%Y-%m-%d")
@@ -40,22 +41,39 @@ with DAG(
     schedule_interval="@daily",
 ) as dag:
     
+    gcloud_auth = BashOperator(
+        task_id="gcloud_auth",
+        bash_command="""
+            gcloud auth activate-service-account --key-file=/opt/airflow/gcp_credentials/gcs_SA_credentials.json
+        """
+    )
+
+    # Lists to store tasks
+    download_tasks = []
+    ingest_tasks = []
+    upload_tasks = []
+    create_table_tasks = []
+
+    # Create tasks in the loop
     for ds in generate_date_string(start_date, end_date):
         download_data = BashOperator(
             task_id=f"download_data_{ds}",
             bash_command=f"curl -o /tmp/yellow_tripdata_{ds}.csv https://github.com/DataTalksClub/nyc-tlc-data/releases/download/yellow/yellow_tripdata_{ds}.csv",
-    )
+        )
+        download_tasks.append(download_data)
 
         ingest_data = PythonOperator(
             task_id=f"ingest_data_{ds}",
             python_callable=format_parquet_file,
             op_args=[f"/tmp/yellow_tripdata_{ds}.csv", f"/tmp/yellow_tripdata_{ds}.parquet"]
         )
+        ingest_tasks.append(ingest_data)
     
         upload_data = BashOperator(
             task_id=f"upload_data_{ds}",
             bash_command=f"gsutil -o 'GSUtil:parallel_composite_upload_threshold=150M' cp /tmp/yellow_tripdata_{ds}.parquet gs://{GCP_GCS_BUCKET}/raw/yellow_tripdata_{ds}.parquet"
         )
+        upload_tasks.append(upload_data)
 
         create_table = BigQueryCreateExternalTableOperator(
             task_id=f"create_table_{ds}",
@@ -93,5 +111,10 @@ with DAG(
                 }
             }
         )
+        create_table_tasks.append(create_table)
 
+        # Set dependencies within each chain
         download_data >> ingest_data >> upload_data >> create_table
+
+    # Set gcloud_auth as prerequisite for all download tasks
+    gcloud_auth >> download_tasks
